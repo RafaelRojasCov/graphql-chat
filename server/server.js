@@ -24,10 +24,21 @@ app.use(
 const typeDefs = fs.readFileSync("./schema.graphql", { encoding: "utf8" });
 const resolvers = require("./resolvers");
 
-function context({ req }) {
-  if (req && req.user) {
-    return { userId: req.user.sub };
+function context({ req = {}, connection = {} }) {
+  const { user = {} } = req;
+  const { sub: userId = null } = user;
+  const { context = {} } = connection;
+  const { accessToken = null } = context;
+
+  if (!!userId) {
+    return { userId };
   }
+
+  if (!!accessToken) {
+    const { sub: userId } = jwt.decode(accessToken, jwtSecret);
+    return { userId };
+  }
+
   return {};
 }
 
