@@ -8,10 +8,14 @@ type Mutation {
 
 type Message {
   id: ID!
-  from: String 
+  from: String
   text: String
 }
 
 input MessageInput {
   text: String
+}
+
+type Subscription {
+  messageAdded: Message
 }
